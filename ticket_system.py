@@ -15,6 +15,13 @@ if 'logged_in' not in st.session_state:
     st.session_state.Name = None
     st.session_state.role = None
 
+if 'password_change_logs' not in st.session_state:
+    st.session_state.password_change_logs=[]
+
+def notify_password_change(old_password, new_password, employee_name):
+     msg=f"✅ Password changed from '{old_password}' to '{new_password}' by employee: {employee_name}"
+     return msg
+
 
 def send_email(to_email,subject, message):
     query='''
@@ -176,7 +183,7 @@ def main_application():
                  st.subheader('Create Ticket ')
                  title=st.selectbox('Ticket Title',['IT Ticket'])
                  description=st.text_area('Ticket Description')
-                 final_description = f'Hi i am {name},id equal:{idd},\n\n {description}'
+                 final_description = f'Hi i am {name},id equal:{id},\n\n {description}'
                  send_email('ahmed.abdellatif@almada-eg.com',title,final_description)
                  if st.button('Create Ticket'):
                     if title and description:
@@ -215,7 +222,8 @@ def main_application():
                 if st.button('Change Password'):
                     if old and new:
                         change_pass(old,new)
-                    
+                        msg=notify_password_change(old,new,name)
+                        send_email('yossifhendy32@gmail.com','change_password',msg)
                     else:
                         st.error('Please inter Old password and new password')     
                         
@@ -238,7 +246,7 @@ def main_application():
                     st.error('please inter the description and id ')
         
     elif role=='Topadmin':
-        menu=st.sidebar.selectbox('Menu',['View Tickets','Update Ticket Status','update password','Create Ticket','Monitoring'])
+        menu=st.sidebar.selectbox('Menu',['View Tickets','Update Ticket Status','update password','Create Ticket'])
         if menu=='Update Ticket Status':
            st.subheader('Update Ticket Status')
            ticket_id = st.text_input('FormattedID')
@@ -259,23 +267,15 @@ def main_application():
                 new=st.text_input('New Password',type='password')
                 if st.button('Change Password'):
                     if old and new:
-                        st.session_state['old']=old
-                        st.session_state['new']=new
                         change_pass(old,new)
+                        msg=notify_password_change(old,new,name)
+                        send_email('yossifhendy32@gmail.com','change_password',msg)
+                        
                     else:
                         st.error('Please inter Old password and new password') 
                         
                                            
-        elif menu=='Monitoring':
-                  st.subheader('Password Update Monitoring')
-                  if 'old' in st.session_state and 'new' in st.session_state:
-                      old=st.session_state['old']
-                      new=st.session_state['new']  
-                      st.write(f'The old password is **{old}** the new password is **{new}** ,my name is **{name}**')
-                      st.write('-'*20)
-                  else:
-                      st.write("didn't find any progress ")
-
+       
         
         elif menu=='View Tickets':
                 st.subheader('View Tickets')
@@ -303,7 +303,7 @@ def main_application():
                  st.subheader('Create Ticket ')
                  title=st.selectbox('Ticket Title',['IT Ticket'])
                  description=st.text_area('Ticket Description')
-                 final_description = f'Hi i am {name},id equal:{idd},\n\n {description}'
+                 final_description = f'Hi i am {name},id equal:{id},\n\n {description}'
                  send_email('ahmed.abdellatif@almada-eg.com',title,final_description)
                  if st.button('Create Ticket'):
                     if title and description:
@@ -333,7 +333,7 @@ def main_application():
                  st.subheader('Create Ticket ')
                  title=st.selectbox('Ticket Title',['IT Ticket'])
                  description=st.text_area('Ticket Description')
-                 final_description = f'Hi i am {name},id equal:{idd},\n\n {description}'
+                 final_description = f'Hi i am {name},id equal:{id},\n\n {description}'
                  send_email('ahmed.abdellatif@almada-eg.com',title,final_description)
                  if st.button('Create Ticket'):
                     if title and description:
@@ -371,7 +371,8 @@ def main_application():
                 if st.button('Change Password'):
                     if old and new:
                         change_pass(old,new)
-                    
+                        msg=notify_password_change(old,new,name)
+                        send_email('yossifhendy32@gmail.com','change_password',msg)
                     else:
                         st.error('Please inter Old password and new password')
                               
@@ -383,7 +384,7 @@ def main_application():
             st.subheader('Create Ticket')
             title=st.selectbox('Ticket Title',['IT Ticket'])
             description=st.text_area('Ticket Description')
-            final_description = f'Hi i am {name},id equal:{idd},\n\n {description}'
+            final_description = f'Hi i am {name},id equal:{id},\n\n {description}'
             send_email('ahmed.abdellatif@almada-eg.com',title,final_description)
             if st.button('Create Ticket'):
                 if title and description:
@@ -411,6 +412,8 @@ def main_application():
             if st.button('update password'):
               if old and new:   
                  change_pass(old,new)
+                 msg=notify_password_change(old,new,name)
+                 send_email('yossifhendy32@gmail.com','change_password',msg)
               else:
                   st.error('Please provide new password and old password ❌')
                     
